@@ -1,26 +1,36 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from 'react';
+import TextInput from './components/TextInput';
+import PdfViewer from './components/PdfViewer';
+import HistoryViewer from './components/HistoryViewer';
 
-function App() {
+const App: React.FC = () => {
+  const [pdfUrl, setPdfUrl] = useState<string | null>(null);
+  const [history, setHistory] = useState<string[]>([]);
+
+  useEffect(() => {
+    const savedHistory = JSON.parse(localStorage.getItem('pdfHistory') || '[]');
+    setHistory(savedHistory);
+  }, []);
+
+  const handlePdfGenerated = (newPdfUrl: string) => {
+    setPdfUrl(newPdfUrl);
+    const newHistory = [newPdfUrl, ...history];
+    setHistory(newHistory);
+    localStorage.setItem('pdfHistory', JSON.stringify(newHistory));
+  };
+
+  const handlePdfSelect = (pdfUrl: string) => {
+    setPdfUrl(pdfUrl);
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="p-4">
+      <h1>Text to PDF Converter</h1>
+      <TextInput onPdfGenerated={handlePdfGenerated} />
+      <PdfViewer pdfUrl={pdfUrl} />
+      <HistoryViewer history={history} onSelect={handlePdfSelect} />
     </div>
   );
-}
+};
 
 export default App;
