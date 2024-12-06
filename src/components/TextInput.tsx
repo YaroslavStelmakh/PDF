@@ -30,7 +30,6 @@ const TextInput: React.FC<TextInputProps> = ({ onPdfGenerated }) => {
         const base64String = reader.result as string;
         onPdfGenerated(base64String);
 
-        // Зберігаємо історію у localStorage
         let pdfHistory = JSON.parse(localStorage.getItem('pdfHistory') || '[]');
         pdfHistory.push(base64String);
         localStorage.setItem('pdfHistory', JSON.stringify(pdfHistory));
